@@ -63,7 +63,7 @@ NTL.phys.data.surface <- filter(NTL.phys.data, depth == 0)
 # Choose multiple conditions to filter
 summary(NTL.phys.data$lakename)
 NTL.phys.data.PeterPaul <- 
-  filter(NTL.phys.data, lakename %in% c("Paul Lake", "Peter Lake"))
+  filter(NTL.phys.data, lakename %in% c("Paul Lake", "Peter Lake")) # c()creating new vectors
 
 # Choose a range of conditions of a numeric or integer variable
 summary(NTL.phys.data$daynum)
@@ -74,12 +74,12 @@ NTL.phys.data.JunethruOctober <- filter(NTL.phys.data, daynum %in% c(152:304))
 # Exercise 1: 
 # filter NTL.phys.data for the year 1999
 # what code do you need to use, based on the class of the variable?
-
-
+class(NTL.phys.data$sampledate)
+NTL.phys.data.year1999 <- filter(NTL.phys.data, year4 == 1999)
 # Exercise 2: 
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
-
-
+NTL.phys.data.Tuesday <- filter(NTL.phys.data, lakename == "Tuesday Lake") # type the full name of the lake
+NTL.phys.data.Tuesday.year <- filter(NTL.phys.data.Tuesday, year4 %in% c(1990:1999))
 ```
 Question: Why don't we filter using row numbers?
 
@@ -103,12 +103,13 @@ NTL.phys.data.processed <-
 
 #Exercise 3: Using a pipe filter NTL.phys.data for Tuesday Lake from 1990 
 # through 1999 only for July.
-
+NTL.phys.data.Tuesday.year.july <- NTL.phys.data %>% filter(lakename == "Tuesday Lake" & year4 %in% c(1990:1999) & month(sampledate) == 7)
+NTL.phys.data.Tuesday.year.july1 <- NTL.phys.data %>% mutate(month = month(sampledate)) %>% filter(lakename == "Tuesday Lake" & year4 %in% c(1990:1999) & month == 7)
 
 #Exercise 4: Using the data from part 3, a pipe, and the summarize() function 
 # find the mean surface temperature (hints: you will need to add another
 # filter for depth==0). Make sure you eliminate NAs before computing the means.
-
+NTL.phys.data.EX4 <- NTL.phys.data.Tuesday.year.july %>% filter(depth == 0) %>% drop_na(temperature_C) %>% summarize(meantemp = mean(temperature_C))
   
 ```
 
@@ -121,9 +122,10 @@ For gather we will use `pivot_longer` and for spread we will use `pivot_wider`.
 #  on the deck of the sampling boat) into one column using pivot_longer. Name
 #  the new column holding the irradiance type as "Irradiance_Type", and name the
 #  new column holding the irradiance values as "Irradiance_Value".
-
+NTL.phys.data.gathered <- pivot_longer(NTL.phys.data, irradianceWater:irradianceDeck, names_to = "Irradiance_Type", values_to = "Irradiance_Value")
+NTL.phys.data.gathered1 <- NTL.phys.data %>% pivot_longer(irradianceWater:irradianceDeck, names_to = "Irradiance_Type", values_to = "Irradiance_Value")
 
 #Exercise 6: Spread temperatureC into more than one column based on the depth.
-
+NTL.phys.data.gathered2 <- NTL.phys.data %>% pivot_wider(names_from = depth, values_from = temperature_C)#normal to have so many NA, can use select function 
 ```
 

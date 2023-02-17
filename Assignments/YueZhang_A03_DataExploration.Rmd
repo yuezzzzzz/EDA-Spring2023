@@ -120,7 +120,9 @@ Interpret this graph. What are the most common test locations, and do they diffe
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
 ```{r}
-ggplot(Neonics) + geom_bar(aes(x=Endpoint)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ggplot(Neonics) + geom_bar(aes(x=Endpoint)) + 
+  theme(axis.text.x = element_text(angle = 90, 
+                                   vjust = 0.5, hjust = 1))
 ```
 
 > Answer: NOEL and LOEL are the two most common end points. NOEL (No-observable-effect-level): highest does (concentration) producing effects not significantly different from responses of controls according to author's reported statistical test. LOEL (Lowest-observable-effect-level): lowest dose (concentration) producing effects that were significantly different (as reported by authors) from responses of controls. 
@@ -156,10 +158,9 @@ ggplot(Litter) + geom_bar(aes(x=functionalGroup)) +
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r,fig.width= 10}
-ggplot(Litter) + geom_boxplot(aes(x=functionalGroup, y=dryMass)) + 
-  coord_flip()
+ggplot(Litter) + geom_boxplot(aes(x=functionalGroup, y=dryMass)) + coord_flip()
 
-ggplot(Litter) + geom_violin(aes(x=functionalGroup, y=dryMass))+coord_flip()
+ggplot(Litter) + geom_violin(aes(x=functionalGroup, y=dryMass)) + coord_flip()
 
 ```
 
