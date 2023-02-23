@@ -1,6 +1,6 @@
 ---
-title: "Assignment 5: Data Visualization"
-author: "Student Name"
+title: "YueZhang_A05_DataVisualization"
+author: "Yue Zhang"
 date: "Spring 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -31,9 +31,21 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 2. Make sure R is reading dates as date format; if not change the format to date.
 
 ```{r initialize project}
-#1 
+#1
+library()
+library(lubridate)
+library(here)
+library(cowplot)
+library(ggpubr)
+getwd()
+NTL = read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
+NEON = read.csv("./Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
 
 #2 
+class(NTL$sampledate)
+class(NEON$collectDate)
+NTL$sampledate = ymd(NTL$sampledate)
+NEON$collectDate = ymd(NEON$collectDate)
 
 ```
 ## Define your theme
@@ -46,6 +58,8 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
+library(ggthemes)
+mytheme = theme_wsj(base_size = 14) + theme(axis.text = element_text(color = "black"), legend.position = "top")
 
 ```
 
@@ -56,6 +70,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 
+ggplot(NTL, aes(x = tp_ug, y = po4, color = lakename)) + geom_point() + geom_smooth(method = lm, color = "black") + ylim(0,50)
 
 ```
 
@@ -64,8 +79,13 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 Tip: R has a build in variable called `month.abb` that returns a list of months;see <https://r-lang.com/month-abb-in-r-with-example>
 
-```{r Create boxplots}
+```{r Create boxplots, fig.height = 6, fig.width = 4, warning = FALSE}
 #5 
+temperatureplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = temperature_C, color = lakename)) + labs(x = "Month")
+tpplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = tp_ug, color = lakename)) + labs(x = "Month")
+tnplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = tn_ug, color = lakename)) + labs(x = "Month")
+ggarrange(temperatureplot, tpplot, tnplot, nrow = 3,align = "v", common.legend = TRUE)
+
 
 ```
 
@@ -79,12 +99,12 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
-
+Needlesplot = ggplot(subset(NEON, functionalGroup == "Needles")) + geom_point(aes(x = collectDate, y = dryMass, color = nlcdClass))
 
 #7
-
+ggplot(subset(NEON, functionalGroup == "Needles")) + geom_point(aes(x = collectDate, y = dryMass)) + facet_wrap(vars(nlcdClass), nrow = 3)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer: I think the second plot (7) is more effective. If we seperate them by color, sometimes it is hard to read and a little messy. But if we seperate them into three facets, it's easier to compare the difference of dryMass in different years in one functional group, or the difference of dryMass in the same year in different functional groups.
