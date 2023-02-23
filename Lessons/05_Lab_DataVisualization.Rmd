@@ -47,7 +47,7 @@ ggplot(data=data.frame(x=0,y=0))+
     x=0,
     y=0.025,
     label=expression(paste("Mean is ", mu,",", R^{2},'=0.6'))
-    )
+    ) # paste: combine strings with space, paste0: without space between the two strings, R^{2}: mathjax
 
 #Print the plot
 print(Plot_text)
@@ -93,15 +93,22 @@ Say we want to plot the number of records each month in the Peter/Paul lakes dat
 
 ```{r Plot the number of records by month}
 #What kind of values are months?
+class(PeterPaul.chem.nutrients$month)
 
 #List unique values
+unique(PeterPaul.chem.nutrients$month)
 
 #Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients) + geom_bar(aes(x = month)) #Histograms visualize quantitative data or numerical data, whereas bar charts display categorical variables
 
 #Convert month to a factor -- with 12 levels, labelled with month names
-
+factor(PeterPaul.chem.nutrients$month, levels = 1:12, labels = month.abb)
 #Try again: Plot how many Lake observations occur each month
 
+ggplot(PeterPaul.chem.nutrients, aes(x = factor(month, levels = 1:12, labels = month.abb))) + geom_bar() + scale_x_discrete(drop = FALSE)
+
+ggplot(PeterPaul.chem.nutrients, aes(x = factor(month, levels = 1:12, labels = month.abb))) + geom_bar() + scale_x_discrete(drop = FALSE) + labs(title = "My Plot", x = "Month")
+       
 #Alter to include missing months
 
 #Tidy up the code
@@ -229,6 +236,7 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
 
+PeterPaul.chem.nutrients %>% filter(depth == 0) %>% ggplot() + geom_point(aes(x = daynum, y = temperature_C, color = year4), size = 0.5, alpha = 0.5) + facet_wrap(vars(lakename), nrow = 2)#alpha: transparency
 
 #2. 
 # Plot temperature by date. Color your points by depth.
