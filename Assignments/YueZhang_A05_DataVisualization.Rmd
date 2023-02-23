@@ -30,9 +30,17 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 2. Make sure R is reading dates as date format; if not change the format to date.
 
+```{r setup, include=FALSE}
+#This code chunk will tidy your knit PDF files, wrapping long code lines
+#For it to work, the "formatR" package needs to be installed
+
+#install.packages('formatR')
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=40), tidy=TRUE)
+```
+
 ```{r initialize project}
 #1
-library()
+library(tidyverse)
 library(lubridate)
 library(here)
 library(cowplot)
@@ -79,13 +87,12 @@ ggplot(NTL, aes(x = tp_ug, y = po4, color = lakename)) + geom_point() + geom_smo
 
 Tip: R has a build in variable called `month.abb` that returns a list of months;see <https://r-lang.com/month-abb-in-r-with-example>
 
-```{r Create boxplots, fig.height = 6, fig.width = 4, warning = FALSE}
+```{r Create boxplots, fig.height = 6, warning = FALSE}
 #5 
 temperatureplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = temperature_C, color = lakename)) + labs(x = "Month")
 tpplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = tp_ug, color = lakename)) + labs(x = "Month")
 tnplot = ggplot(NTL) + geom_boxplot(aes(x = factor(month, levels = 1:12, labels = month.abb), y = tn_ug, color = lakename)) + labs(x = "Month")
 ggarrange(temperatureplot, tpplot, tnplot, nrow = 3,align = "v", common.legend = TRUE)
-
 
 ```
 
@@ -99,7 +106,7 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
-Needlesplot = ggplot(subset(NEON, functionalGroup == "Needles")) + geom_point(aes(x = collectDate, y = dryMass, color = nlcdClass))
+ggplot(subset(NEON, functionalGroup == "Needles")) + geom_point(aes(x = collectDate, y = dryMass, color = nlcdClass))
 
 #7
 ggplot(subset(NEON, functionalGroup == "Needles")) + geom_point(aes(x = collectDate, y = dryMass)) + facet_wrap(vars(nlcdClass), nrow = 3)
