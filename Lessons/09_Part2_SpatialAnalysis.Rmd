@@ -117,20 +117,20 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf = st_read("./Data/Spatial/NCHUC8.shp")
 
 #Reveal the columns
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
-
-
+mapView(huc8_sf, zcol = "ACRES")
+ggplot() + geom_sf(data = huc8_sf, fill = huc8_sf$ACRES) + scale_fill_distiller(palette = "Y10rRd")
 
 
 ```
@@ -141,13 +141,13 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+upperneuse_sf = st_read("./Data/Spatial/NCHUC8.shp") %>% filter(huc8_sf$SUBBASIN == "Upper Neuse")
 
 
 #Create a map
+mapView(huc8_sf, col.regions = "orange") + mapView(upperneuse_sf, col.regions = "purple")
 
-
-
+ggplot() + geom_sf(data = huc8_sf, fill = "purple", color = "grey") + geom_sf(data = upperneuse_sf, fill = "orange")
 
 ```
 
@@ -354,6 +354,7 @@ neuse_intersect_1 <- counties_sf_utm[neuse_sf,]
 neuse_intersect_2 <- counties_sf_utm %>% 
   filter(st_intersects(x = ., y = neuse_sf, sparse = FALSE))
 
+neuse_intersect_3 = counties_sf_utm %>% st_filter(neuse_sf, .pred = st_intersects)
 #View the result
 myMap + mapview(neuse_intersect_2, alpha.regions = 0)
 
